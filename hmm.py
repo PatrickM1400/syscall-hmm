@@ -3,6 +3,21 @@ import numpy as np
 from syscall_nums import * 
 import pickle
 
+# Train one hmm based on one cluster of syscall sequences
+def train_hmm(files, output):
+
+    hmm = CategoricalHMM(n_components=50, n_features=398) # 50 is constant that should be changed
+    # print(testing.startprob_.shape)
+
+    for file in files:
+        with open(file, "r") as f:
+            line = f.readline()
+            data = np.array([syscall_nums[name] for name in line.split('|')]).reshape(-1, 1)
+
+        hmm.fit(data)
+
+    with open(output, "wb") as f: pickle.dump(hmm, f)
+
 
 
 # training = CategoricalHMM(n_components=50, n_features=398)
@@ -10,7 +25,7 @@ import pickle
 
 # abnormal_file = './dongting/Abnormal_data/kernel_v500-289/sy_BUG__MAX_STACK_TRACE_ENTRIES_too_low__POC7.log'
 # normal_file = './dongting/Normal_data/glibc 2884/sy_annexc.log'
-normal_file2 = './dongting/Normal_data/glibc 2884/sy_argp-test.log'
+# normal_file2 = './dongting/Normal_data/glibc 2884/sy_argp-test.log'
 
 # with open(normal_file, "r") as f:
 #     line = f.readline()
@@ -24,15 +39,15 @@ normal_file2 = './dongting/Normal_data/glibc 2884/sy_argp-test.log'
 
 # with open("hmm.pkl", "wb") as f: pickle.dump(training, f)
 
-with open("hmm.pkl", "rb") as bytes:
-    new_training = pickle.load(bytes)
+# with open("hmm.pkl", "rb") as bytes:
+#     new_training = pickle.load(bytes)
 
-with open(normal_file2, "r") as f:
-    line = f.readline()
-    data = np.array([syscall_nums[name] for name in line.split('|')]).reshape(-1, 1)
+# with open(normal_file2, "r") as f:
+#     line = f.readline()
+#     data = np.array([syscall_nums[name] for name in line.split('|')]).reshape(-1, 1)
 
 
-print(new_training.bic(data))
+# print(new_training.bic(data))
 
 # print(new_training.startprob_)
 # print(new_training.transmat_)
